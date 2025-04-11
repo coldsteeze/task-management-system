@@ -1,0 +1,16 @@
+# Maven
+/target/
+
+# IDE
+.idea/
+*.iml
+
+# OS system files
+.DS_Store
+
+# Logs
+*.log
+
+# Application properties
+application.yml
+application.properties

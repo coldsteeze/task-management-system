@@ -7,8 +7,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class AuthServiceImpl implements AuthService {
+
     @Override
     public String register() {
         return "User registered";
+    }
+
+    @Override
+    public String login() {
+        return "User logged in";
     }
 }

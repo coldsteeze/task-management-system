@@ -3,6 +3,7 @@ package korobkin.nikita.task_management_system.controller;
 import jakarta.validation.Valid;
 import korobkin.nikita.task_management_system.dto.request.LoginRequest;
 import korobkin.nikita.task_management_system.dto.request.RegisterRequest;
+import korobkin.nikita.task_management_system.dto.response.JwtAuthenticationResponse;
 import korobkin.nikita.task_management_system.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +20,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody @Valid RegisterRequest registerRequest) {
-        return ResponseEntity.ok(authService.register());
+    public ResponseEntity<JwtAuthenticationResponse> register(@RequestBody @Valid RegisterRequest registerRequest) {
+        return ResponseEntity.ok(authService.register(registerRequest));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody @Valid LoginRequest loginRequest) {
-        return ResponseEntity.ok(authService.login());
+    public ResponseEntity<JwtAuthenticationResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
+        return ResponseEntity.ok(authService.login(loginRequest));
     }
 }

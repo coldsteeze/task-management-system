@@ -1,8 +1,12 @@
 package korobkin.nikita.task_management_system.service;
 
+import korobkin.nikita.task_management_system.dto.request.LoginRequest;
+import korobkin.nikita.task_management_system.dto.request.RegisterRequest;
+import korobkin.nikita.task_management_system.dto.response.JwtAuthenticationResponse;
+
 public interface AuthService {
 
-    String register();
+    JwtAuthenticationResponse register(RegisterRequest registerRequest);
 
-    String login();
+    JwtAuthenticationResponse login(LoginRequest loginRequest);
 }

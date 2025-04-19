@@ -19,10 +19,10 @@ public class JwtProvider {
     @Value("${spring.security.jwt.expiration}")
     private long jwtExpiration;
 
-    public String generateToken(String username) {
+    public String generateToken(String email) {
         return JWT.create()
                 .withSubject("User details")
-                .withClaim("username", username)
+                .withClaim("email", email)
                 .withIssuedAt(new Date())
                 .withIssuer("Task-management application")
                 .withExpiresAt(new Date(System.currentTimeMillis() + jwtExpiration * 1000))
@@ -37,6 +37,6 @@ public class JwtProvider {
 
         DecodedJWT jwt = jwtVerifier.verify(token);
 
-        return jwt.getClaim("username").asString();
+        return jwt.getClaim("email").asString();
     }
 }

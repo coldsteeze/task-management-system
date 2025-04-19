@@ -9,3 +9,4 @@ public interface UserMapper {
 
     User toEntity(RegisterRequest registerRequest);
 }
+

@@ -8,10 +8,9 @@ import korobkin.nikita.task_management_system.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,5 +24,12 @@ public class BoardController {
             @RequestBody @Valid CreateBoardRequest createBoardRequest,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(boardService.createBoard(createBoardRequest, userDetails.getUser()));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<BoardResponse>> getBoardsByProject(
+            @RequestParam Long projectId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(boardService.getBoardsByProject(projectId, userDetails.getUser()));
     }
 }

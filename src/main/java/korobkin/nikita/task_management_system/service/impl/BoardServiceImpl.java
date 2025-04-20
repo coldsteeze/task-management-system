@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
@@ -40,5 +42,16 @@ public class BoardServiceImpl implements BoardService {
         boardRepository.save(board);
 
         return new BoardResponse(board.getId(), board.getName(), board.getProject().getId());
+    }
+
+    @Override
+    public List<BoardResponse> getBoardsByProject(Long projectId, User currentUser) {
+        if (!projectRepository.existsByIdAndOwner(projectId, currentUser)) {
+            throw new RuntimeException("Project not found or user is not the owner");
+        }
+
+        Project project = projectRepository.findById(projectId).get();
+
+        return boardMapper.toDtoList(boardRepository.findAllByProject(project));
     }
 }

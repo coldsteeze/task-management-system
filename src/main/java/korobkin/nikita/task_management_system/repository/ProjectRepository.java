@@ -15,4 +15,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     Set<Project> findAllByOwner(User owner);
 
     Boolean existsByOwnerAndName(User owner, String name);
+
+    Boolean existsByIdAndOwner(Long id, User owner);
 }

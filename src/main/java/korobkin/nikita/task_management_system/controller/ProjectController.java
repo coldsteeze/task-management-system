@@ -37,6 +37,7 @@ public class ProjectController {
             @PathVariable Long projectId,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         projectService.deleteProject(projectId, userDetails.getUser());
+
         return ResponseEntity.noContent().build();
     }
 }

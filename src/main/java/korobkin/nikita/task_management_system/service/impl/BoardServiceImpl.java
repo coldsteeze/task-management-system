@@ -76,4 +76,17 @@ public class BoardServiceImpl implements BoardService {
 
         return boardMapper.toDto(board);
     }
+
+    @Override
+    @Transactional
+    public void deleteBoard(Long boardId, User currentUser) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new RuntimeException("Board not found"));
+
+        if (!board.getProject().getOwner().equals(currentUser)) {
+            throw new RuntimeException("User is not the owner of the project");
+        }
+
+        boardRepository.delete(board);
+    }
 }

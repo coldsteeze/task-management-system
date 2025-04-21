@@ -14,4 +14,6 @@ public interface BoardService {
     List<BoardResponse> getBoardsByProject(Long projectId, User currentUser);
 
     BoardResponse updateBoard(UpdateBoardRequest updateBoardRequest, User currentUser);
+
+    void deleteBoard(Long boardId, User currentUser);
 }

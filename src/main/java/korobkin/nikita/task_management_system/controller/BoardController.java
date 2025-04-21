@@ -40,4 +40,13 @@ public class BoardController {
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(boardService.updateBoard(updateBoardRequest, userDetails.getUser()));
     }
+
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<Void> deleteBoard(
+            @PathVariable Long boardId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        boardService.deleteBoard(boardId, userDetails.getUser());
+
+        return ResponseEntity.noContent().build();
+    }
 }

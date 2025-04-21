@@ -34,6 +34,13 @@ public class BoardController {
         return ResponseEntity.ok(boardService.getBoardsByProject(projectId, userDetails.getUser()));
     }
 
+    @GetMapping("/{boardId}")
+    public ResponseEntity<BoardResponse> getBoardById(
+            @PathVariable Long boardId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(boardService.getBoardById(boardId, userDetails.getUser()));
+    }
+
     @PutMapping
     public ResponseEntity<BoardResponse> updateBoard(
             @RequestBody @Valid UpdateBoardRequest updateBoardRequest,

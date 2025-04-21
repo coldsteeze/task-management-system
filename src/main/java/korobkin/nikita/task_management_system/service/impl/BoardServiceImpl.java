@@ -46,6 +46,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BoardResponse> getBoardsByProject(Long projectId, User currentUser) {
         if (!projectRepository.existsByIdAndOwner(projectId, currentUser)) {
             throw new RuntimeException("Project not found or user is not the owner");
@@ -54,6 +55,19 @@ public class BoardServiceImpl implements BoardService {
         Project project = projectRepository.findById(projectId).get();
 
         return boardMapper.toDtoList(boardRepository.findAllByProject(project));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BoardResponse getBoardById(Long boardId, User currentUser) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new RuntimeException("Board not found"));
+
+        if (!board.getProject().getOwner().equals(currentUser)) {
+            throw new RuntimeException("User is not the owner of the project");
+        }
+
+        return boardMapper.toDto(board);
     }
 
     @Override

@@ -2,6 +2,7 @@ package korobkin.nikita.task_management_system.controller;
 
 import jakarta.validation.Valid;
 import korobkin.nikita.task_management_system.dto.request.CreateBoardRequest;
+import korobkin.nikita.task_management_system.dto.request.UpdateBoardRequest;
 import korobkin.nikita.task_management_system.dto.response.BoardResponse;
 import korobkin.nikita.task_management_system.security.UserDetailsImpl;
 import korobkin.nikita.task_management_system.service.BoardService;
@@ -31,5 +32,12 @@ public class BoardController {
             @RequestParam Long projectId,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(boardService.getBoardsByProject(projectId, userDetails.getUser()));
+    }
+
+    @PutMapping
+    public ResponseEntity<BoardResponse> updateBoard(
+            @RequestBody @Valid UpdateBoardRequest updateBoardRequest,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(boardService.updateBoard(updateBoardRequest, userDetails.getUser()));
     }
 }

@@ -13,4 +13,5 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     Boolean existsByNameAndProject(String name, Project project);
 
     Set<Board> findAllByProject(Project project);
+
 }

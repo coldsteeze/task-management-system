@@ -32,7 +32,7 @@ public class ProjectServiceImpl implements ProjectService {
         project.setOwner(currentUser);
         projectRepository.save(project);
 
-        return new ProjectResponse(project.getId(), project.getName(), project.getDescription());
+        return projectMapper.toDto(project);
     }
 
     @Override

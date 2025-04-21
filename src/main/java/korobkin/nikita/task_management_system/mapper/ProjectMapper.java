@@ -14,4 +14,6 @@ public interface ProjectMapper {
     Project toEntity(CreateProjectRequest createProjectRequest);
 
     List<ProjectResponse> toDtoList(Set<Project> projects);
+
+    ProjectResponse toDto(Project project);
 }

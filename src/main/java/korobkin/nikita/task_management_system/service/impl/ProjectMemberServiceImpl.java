@@ -5,6 +5,7 @@ import korobkin.nikita.task_management_system.dto.request.AddProjectMemberReques
 import korobkin.nikita.task_management_system.entity.Project;
 import korobkin.nikita.task_management_system.entity.ProjectMember;
 import korobkin.nikita.task_management_system.entity.User;
+import korobkin.nikita.task_management_system.entity.enums.ProjectRole;
 import korobkin.nikita.task_management_system.repository.ProjectMemberRepository;
 import korobkin.nikita.task_management_system.repository.ProjectRepository;
 import korobkin.nikita.task_management_system.repository.UserRepository;
@@ -41,6 +42,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
         ProjectMember projectMember = new ProjectMember();
         projectMember.setProject(project);
         projectMember.setUser(user);
+        projectMember.setProjectRole(request.getProjectRole());
         projectMemberRepository.save(projectMember);
     }
 }

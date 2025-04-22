@@ -3,8 +3,8 @@
 CREATE table project_members
 (
     id           BIGINT PRIMARY KEY AUTO_INCREMENT,
-    project_id BIGINT NOT NULL,
-    user_id BIGINT NOT NULL,
+    project_id   BIGINT       NOT NULL,
+    user_id      BIGINT       NOT NULL,
     project_role VARCHAR(255) NOT NULL,
     CONSTRAINT fk_project_member_project FOREIGN KEY (project_id) REFERENCES projects (id),
     CONSTRAINT fk_project_member_user FOREIGN KEY (user_id) REFERENCES users (id),

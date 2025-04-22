@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Table(
         name = "project_members",
@@ -34,4 +37,8 @@ public class ProjectMember {
     @Enumerated(EnumType.STRING)
     @Column(name = "project_role")
     private ProjectRole projectRole;
+
+    @Column(name = "created_at", nullable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 }

@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AddProjectMemberRequest {
+public class UpdateProjectMemberRoleRequest {
 
     @Positive(message = "User id must be positive")
     @NotNull(message = "User id is required")

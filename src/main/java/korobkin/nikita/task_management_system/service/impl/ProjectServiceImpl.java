@@ -4,8 +4,11 @@ import jakarta.validation.Valid;
 import korobkin.nikita.task_management_system.dto.request.CreateProjectRequest;
 import korobkin.nikita.task_management_system.dto.response.ProjectResponse;
 import korobkin.nikita.task_management_system.entity.Project;
+import korobkin.nikita.task_management_system.entity.ProjectMember;
 import korobkin.nikita.task_management_system.entity.User;
+import korobkin.nikita.task_management_system.entity.enums.ProjectRole;
 import korobkin.nikita.task_management_system.mapper.ProjectMapper;
+import korobkin.nikita.task_management_system.repository.ProjectMemberRepository;
 import korobkin.nikita.task_management_system.repository.ProjectRepository;
 import korobkin.nikita.task_management_system.service.ProjectService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ import java.util.List;
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final ProjectMemberRepository projectMemberRepository;
     private final ProjectMapper projectMapper;
 
     @Override
@@ -31,6 +35,8 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectMapper.toEntity(request);
         project.setOwner(currentUser);
         projectRepository.save(project);
+
+        setProjectMember(currentUser, project);
 
         return projectMapper.toDto(project);
     }
@@ -52,5 +58,14 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         projectRepository.delete(project);
+    }
+
+    private void setProjectMember(User user, Project project) {
+        ProjectMember projectMember = new ProjectMember();
+        projectMember.setUser(user);
+        projectMember.setProject(project);
+        projectMember.setProjectRole(ProjectRole.OWNER);
+
+        projectMemberRepository.save(projectMember);
     }
 }

@@ -5,6 +5,8 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Table(
         name = "boards",
@@ -28,6 +30,9 @@ public class Board {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
+
+    @OneToMany(mappedBy = "board")
+    private Set<Task> tasks = new HashSet<>();
 
     @Column(name = "created_at", nullable = false)
     @CreationTimestamp

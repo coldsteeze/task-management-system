@@ -45,6 +45,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<ProjectMember> projectMembers = new ArrayList<>();
 
+    @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL)
+    private Set<Task> tasks = new HashSet<>();
+
     @Column(name = "created_at", nullable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;

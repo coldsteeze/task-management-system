@@ -72,7 +72,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    public BoardResponse updateBoard(UpdateBoardRequest updateBoardRequest, User currentUser) {
+    public BoardResponse updateBoard(@Valid UpdateBoardRequest updateBoardRequest, User currentUser) {
         Board board = boardRepository.findById(updateBoardRequest.getBoardId())
                 .orElseThrow(() -> new RuntimeException("Board not found"));
 

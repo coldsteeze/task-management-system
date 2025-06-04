@@ -31,7 +31,7 @@ public class Task {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private StatusTask status = StatusTask.TODO;
+    private StatusTask status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assignee_id")

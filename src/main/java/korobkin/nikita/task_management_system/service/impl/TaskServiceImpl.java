@@ -2,6 +2,7 @@ package korobkin.nikita.task_management_system.service.impl;
 
 import jakarta.validation.Valid;
 import korobkin.nikita.task_management_system.dto.request.CreateTaskRequest;
+import korobkin.nikita.task_management_system.dto.request.UpdateTaskRequest;
 import korobkin.nikita.task_management_system.dto.response.TaskResponse;
 import korobkin.nikita.task_management_system.entity.*;
 import korobkin.nikita.task_management_system.entity.enums.ProjectRole;
@@ -30,34 +31,61 @@ public class TaskServiceImpl implements TaskService {
     public TaskResponse createTask(@Valid CreateTaskRequest createTaskRequest, User currentUser) {
         Board board = boardRepository.findById(createTaskRequest.getBoardId())
                 .orElseThrow(() -> new IllegalArgumentException("Board not found"));
-
         Project project = board.getProject();
 
+        checkPermission(project, currentUser);
+
+        Task task = taskMapper.toEntity(createTaskRequest);
+        task.setBoard(board);
+        task.setAssignee(validateAndGetAssignee(createTaskRequest.getAssigneeId(), project));
+
+        taskRepository.save(task);
+
+        return taskMapper.toDto(task);
+    }
+
+    @Override
+    @Transactional
+    public TaskResponse updateTask(@Valid UpdateTaskRequest request, Long taskId, User currentUser) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found"));
+
+        Project project = task.getBoard().getProject();
+        checkPermission(project, currentUser);
+
+        taskMapper.updateEntityFromDto(task, request);
+
+        User assignee = validateAndGetAssignee(request.getAssigneeId(), project);
+        task.setAssignee(assignee);
+
+        taskRepository.save(task);
+
+        return taskMapper.toDto(task);
+    }
+
+    private User validateAndGetAssignee(Long assigneeId, Project project) {
+        if (assigneeId == null) {
+            return null;
+        }
+
+        User user = userRepository.findById(assigneeId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        if (!projectMemberRepository.existsByProjectIdAndUserId(project.getId(), user.getId())) {
+            throw new IllegalArgumentException("Assignee is not a member of the project");
+        }
+
+        return user;
+    }
+
+    private void checkPermission(Project project, User currentUser) {
         ProjectMember projectMember = projectMemberRepository.findByProjectIdAndUserId(
                         project.getId(),
                         currentUser.getId())
                 .orElseThrow(() -> new IllegalArgumentException("You are not a member of the project"));
 
         if (projectMember.getProjectRole() == ProjectRole.VIEWER) {
-            throw new IllegalArgumentException("You don't have permission to create tasks");
+            throw new IllegalArgumentException("You don't have permission to update tasks");
         }
-
-        Task task = taskMapper.toEntity(createTaskRequest);
-        task.setBoard(board);
-
-        if (createTaskRequest.getAssigneeId() != null) {
-            User user = userRepository.findById(createTaskRequest.getAssigneeId())
-                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-            if (!projectMemberRepository.existsByProjectIdAndUserId(project.getId(), user.getId())) {
-                throw new IllegalArgumentException("Assignee is not a member of the project");
-            }
-
-            task.setAssignee(user);
-        }
-
-        taskRepository.save(task);
-
-        return taskMapper.toDto(task);
     }
 }

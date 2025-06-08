@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateTaskRequest {
+public class UpdateTaskRequest {
 
     @NotBlank(message = "Title is required")
     @Size(max = 100, message = "Title must be between 0 and 100 characters")

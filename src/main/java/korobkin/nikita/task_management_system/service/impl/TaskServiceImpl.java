@@ -2,6 +2,7 @@ package korobkin.nikita.task_management_system.service.impl;
 
 import jakarta.validation.Valid;
 import korobkin.nikita.task_management_system.dto.request.CreateTaskRequest;
+import korobkin.nikita.task_management_system.dto.request.UpdateTaskAssigneeRequest;
 import korobkin.nikita.task_management_system.dto.request.UpdateTaskRequest;
 import korobkin.nikita.task_management_system.dto.request.UpdateTaskStatusRequest;
 import korobkin.nikita.task_management_system.dto.response.TaskResponse;
@@ -48,15 +49,11 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public TaskResponse updateTask(@Valid UpdateTaskRequest request, Long taskId, User currentUser) {
-        Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new IllegalArgumentException("Task not found"));
-
-        Project project = task.getBoard().getProject();
-        checkPermission(project, currentUser);
+        Task task = getTaskWithPermissionCheck(taskId, currentUser);
 
         taskMapper.updateEntityFromDto(task, request);
 
-        User assignee = validateAndGetAssignee(request.getAssigneeId(), project);
+        User assignee = validateAndGetAssignee(request.getAssigneeId(), task.getBoard().getProject());
         task.setAssignee(assignee);
 
         taskRepository.save(task);
@@ -67,13 +64,20 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public TaskResponse updateTaskStatus(UpdateTaskStatusRequest request, Long taskId, User currentUser) {
-        Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new IllegalArgumentException("Task not found"));
-
-        Project project = task.getBoard().getProject();
-        checkPermission(project, currentUser);
+        Task task = getTaskWithPermissionCheck(taskId, currentUser);
 
         task.setStatus(request.getStatus());
+        taskRepository.save(task);
+
+        return taskMapper.toDto(task);
+    }
+
+    @Override
+    @Transactional
+    public TaskResponse updateTaskAssignee(UpdateTaskAssigneeRequest request, Long taskId, User currentUser) {
+        Task task = getTaskWithPermissionCheck(taskId, currentUser);
+
+        task.setAssignee(validateAndGetAssignee(request.getAssigneeId(), task.getBoard().getProject()));
         taskRepository.save(task);
 
         return taskMapper.toDto(task);
@@ -103,5 +107,15 @@ public class TaskServiceImpl implements TaskService {
         if (projectMember.getProjectRole() == ProjectRole.VIEWER) {
             throw new IllegalArgumentException("You don't have permission to update tasks");
         }
+    }
+
+    private Task getTaskWithPermissionCheck(Long taskId, User currentUser) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found"));
+
+        Project project = task.getBoard().getProject();
+        checkPermission(project, currentUser);
+
+        return task;
     }
 }

@@ -50,4 +50,15 @@ public class TaskController {
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(taskService.updateTaskAssignee(request, taskId, userDetails.getUser()));
     }
+
+    @DeleteMapping("/{taskId}")
+    public ResponseEntity<Void> deleteTask(
+            @PathVariable Long taskId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        taskService.deleteTask(taskId, userDetails.getUser());
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/")
 }

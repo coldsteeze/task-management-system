@@ -83,6 +83,20 @@ public class TaskServiceImpl implements TaskService {
         return taskMapper.toDto(task);
     }
 
+    @Override
+    @Transactional
+    public void deleteTask(Long taskId, User currentUser) {
+        Task task = getTaskWithPermissionCheck(taskId, currentUser);
+
+        if (!task.getAssignee().equals(currentUser) &&
+                !task.getBoard().getProject().getOwner().equals(currentUser)) {
+            throw new IllegalArgumentException("You are not allowed to delete this task");
+        }
+
+        taskRepository.delete(task);
+    }
+
+
     private User validateAndGetAssignee(Long assigneeId, Project project) {
         if (assigneeId == null) {
             return null;

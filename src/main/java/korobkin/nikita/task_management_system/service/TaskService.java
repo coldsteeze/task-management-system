@@ -16,4 +16,6 @@ public interface TaskService {
     TaskResponse updateTaskStatus(UpdateTaskStatusRequest request, Long taskId, User currentUser);
 
     TaskResponse updateTaskAssignee(UpdateTaskAssigneeRequest request, Long taskId, User currentUser);
+
+    void deleteTask(Long taskId, User currentUser);
 }

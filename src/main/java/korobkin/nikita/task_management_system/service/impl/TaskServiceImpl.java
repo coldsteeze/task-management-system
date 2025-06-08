@@ -3,6 +3,7 @@ package korobkin.nikita.task_management_system.service.impl;
 import jakarta.validation.Valid;
 import korobkin.nikita.task_management_system.dto.request.CreateTaskRequest;
 import korobkin.nikita.task_management_system.dto.request.UpdateTaskRequest;
+import korobkin.nikita.task_management_system.dto.request.UpdateTaskStatusRequest;
 import korobkin.nikita.task_management_system.dto.response.TaskResponse;
 import korobkin.nikita.task_management_system.entity.*;
 import korobkin.nikita.task_management_system.entity.enums.ProjectRole;
@@ -58,6 +59,21 @@ public class TaskServiceImpl implements TaskService {
         User assignee = validateAndGetAssignee(request.getAssigneeId(), project);
         task.setAssignee(assignee);
 
+        taskRepository.save(task);
+
+        return taskMapper.toDto(task);
+    }
+
+    @Override
+    @Transactional
+    public TaskResponse updateTaskStatus(UpdateTaskStatusRequest request, Long taskId, User currentUser) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found"));
+
+        Project project = task.getBoard().getProject();
+        checkPermission(project, currentUser);
+
+        task.setStatus(request.getStatus());
         taskRepository.save(task);
 
         return taskMapper.toDto(task);

@@ -3,6 +3,7 @@ package korobkin.nikita.task_management_system.controller;
 import jakarta.validation.Valid;
 import korobkin.nikita.task_management_system.dto.request.CreateTaskRequest;
 import korobkin.nikita.task_management_system.dto.request.UpdateTaskRequest;
+import korobkin.nikita.task_management_system.dto.request.UpdateTaskStatusRequest;
 import korobkin.nikita.task_management_system.dto.response.TaskResponse;
 import korobkin.nikita.task_management_system.security.UserDetailsImpl;
 import korobkin.nikita.task_management_system.service.TaskService;
@@ -31,5 +32,13 @@ public class TaskController {
             @Valid @RequestBody UpdateTaskRequest updateTaskRequest,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(taskService.updateTask(updateTaskRequest, taskId, userDetails.getUser()));
+    }
+
+    @PatchMapping("/{taskId}/status")
+    public ResponseEntity<TaskResponse> updateTaskStatus(
+            @PathVariable Long taskId,
+            @Valid @RequestBody UpdateTaskStatusRequest request,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(taskService.updateTaskStatus(request, taskId, userDetails.getUser()));
     }
 }
